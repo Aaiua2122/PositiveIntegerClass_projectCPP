@@ -26,7 +26,7 @@ PositiveInteger::~PositiveInteger() {
 
 void PositiveInteger::PrintArray() const {
   for (int i = 0; i < divisors_count_; ++i) {
-    std::cout << divisors_count_ << ' ';
+    std::cout << divisors_[i] << ' ';
   }
   std::cout << "\n";
 }
@@ -36,7 +36,7 @@ void PositiveInteger::BuildArray() {
   divisors_count_ = 0;
 
   for (int divisor = 2; divisor*divisor <= n; ++divisor) {
-    while (n % divisor) {
+    while (n % divisor == 0) {
       ++divisors_count_;
       n /= divisor;
     }
@@ -55,3 +55,36 @@ void PositiveInteger::BuildArray() {
   }
   if (n > 1) {divisors_[index] = n;}  
 }
+
+void PositiveInteger::Replace_divisor(int v_old, int v_new, bool sorted_) {
+  for (int i = 0; i < divisors_count_; ++i) {
+    if (divisors_[i] == v_old) {
+      divisors_[i] = v_new;
+      break;
+    }
+  }
+
+  value_ = 1;
+  for (int i = 0; i < divisors_count_; ++i) {
+    value_ *= divisors_[i];
+  }
+
+  if (sorted_) {
+    SortArray();
+  }
+}
+
+void PositiveInteger::SortArray() {
+  int temporary_value;
+  for (int i = 0; i < divisors_count_ - 1; ++i) {
+    if (divisors_[i] > divisors_[i+1]) {
+      temporary_value = divisors_[i+1];
+      divisors_[i+1] = divisors_[i];
+      divisors_[i] = temporary_value;
+    }
+  }  
+}
+
+
+
+
