@@ -117,3 +117,33 @@ int Gcd(const PositiveInteger& a, const PositiveInteger& b) {
   delete[] copy_array;
   return result;
 }
+
+int Lcm(const PositiveInteger& a, const PositiveInteger& b) {
+  int* a_divisors = a.GetDivisors();
+  int* b_divisors = b.GetDivisors();
+  int a_count = a.GetDivisors_count();
+  int b_count = b.GetDivisors_count();
+
+  int result = 1;
+  int* copy_array = new int[b_count];
+  for (int i = 0; i < b_count; ++i) {
+    copy_array[i] = b_divisors[i];
+  }
+
+  for (int i = 0; i < a_count; ++i) {
+    for (int j = 0; j < b_count; ++j) {
+      if (a_divisors[i] == copy_array[j]) {
+        copy_array[j] = 1;
+        break;
+      }
+    }
+    result *= a_divisors[i];
+  }
+
+  for (int i = 0; i < b_count; ++i) {
+    result *= copy_array[i];
+  }
+
+  delete[] copy_array;
+  return result;
+}
