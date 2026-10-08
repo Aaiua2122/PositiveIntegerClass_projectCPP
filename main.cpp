@@ -3,14 +3,11 @@
 #include "positive_integer.h"
 
 int main() {
-
   PositiveInteger test1(8);
   PositiveInteger test2(24);
   PositiveInteger test3(7);
   PositiveInteger test4(15);
   PositiveInteger test5(12);
-
-
 
   std::cout << "\nInit new number1\n";
   PositiveInteger number1(120);
