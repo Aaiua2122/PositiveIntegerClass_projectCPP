@@ -1,16 +1,12 @@
 #include "positive_integer.h"
 
-//#include <vector>
 #include <iostream>
-// namespaces
 
-//std::vector
-//myvector::vector
-
-PositiveInteger::PositiveInteger(int value) {
+PositiveInteger::PositiveInteger(int value, bool sorted) {
   value_ = value;
   divisors_ = nullptr;
   divisors_count_ = 0;
+  sorted_ = sorted;
 
   BuildArray();
 }
@@ -33,6 +29,7 @@ PositiveInteger& PositiveInteger::operator=(const PositiveInteger& other) {
 PositiveInteger::PositiveInteger(const PositiveInteger& other) {
   value_ = other.value_;
   divisors_count_ = other.divisors_count_;
+  sorted_ = other.sorted_;
 
   divisors_ = new int[divisors_count_];
   for (int i = 0; i < divisors_count_; ++i) { // size_t 
@@ -80,60 +77,53 @@ void PositiveInteger::BuildArray() {
   }
 }
 
-// вынести sorted -> ctr
-void PositiveInteger::Replace_divisor(int v_old, int v_new, bool sorted) {
+
+void PositiveInteger::Replace_divisor(int v_old, int v_new) {
+
+  bool flag = false;
+
   for (int i = 0; i < divisors_count_; ++i) {
     if (divisors_[i] == v_old) {
       divisors_[i] = v_new;
+      flag = true;
       break;
     }
   }
 
-// ранний выход
+  if (!flag) {return;}
+
   value_ = 1;
   for (int i = 0; i < divisors_count_; ++i) {
     value_ *= divisors_[i];
   }
 
-  if (sorted) {
+  if (sorted_) {
     SortArray();
   }
 }
 
 void PositiveInteger::SortArray() {
   int temporary_value;
-  for (int i = 0; i < divisors_count_ - 1; ++i) {
-    if (divisors_[i] > divisors_[i + 1]) {
-      temporary_value = divisors_[i + 1];
-      divisors_[i + 1] = divisors_[i];
-      divisors_[i] = temporary_value;
+  for (int j = 0; j < divisors_count_ - 1; ++j)
+    for (int i = 0; i < divisors_count_ - 1 - j; ++i) {
+      if (divisors_[i] > divisors_[i + 1]) {
+        temporary_value = divisors_[i + 1];
+        divisors_[i + 1] = divisors_[i];
+        divisors_[i] = temporary_value;
     }
   }
 }
 
-int PositiveInteger::GetValue() const { return value_; }
-
-
-int* PositiveInteger::GetDivisors() const { return divisors_; }
-
-int PositiveInteger::GetDivisors_count() const { return divisors_count_; }
-
-// вынести в метод
-int Gcd(const PositiveInteger& a, const PositiveInteger& b) {
-  int* a_divisors = a.GetDivisors();
-  int* b_divisors = b.GetDivisors();
-  int a_count = a.GetDivisors_count();
-  int b_count = b.GetDivisors_count();
-
+int PositiveInteger::Gcd(const PositiveInteger& a) const {
   int result = 1;
-  int* copy_array = new int[b_count];
-  for (int i = 0; i < b_count; ++i) {
-    copy_array[i] = b_divisors[i];
+  int* copy_array = new int[a.divisors_count_];
+  for (int i = 0; i < a.divisors_count_; ++i) {
+    copy_array[i] = a.divisors_[i];
   }
 
-  for (int i = 0; i < a_count; ++i) {
-    for (int j = 0; j < b_count; ++j) {
-      if (a_divisors[i] == copy_array[j]) {
+  for (int i = 0; i < divisors_count_; ++i) {
+    for (int j = 0; j < a.divisors_count_; ++j) {
+      if (divisors_[i] == copy_array[j]) {
         result *= copy_array[j];
         copy_array[j] = 0;
         break;
@@ -144,35 +134,8 @@ int Gcd(const PositiveInteger& a, const PositiveInteger& b) {
   return result;
 }
 
-// переписать, можно через gcd
-int Lcm(const PositiveInteger& a, const PositiveInteger& b) {
-  int* a_divisors = a.GetDivisors();
-  int* b_divisors = b.GetDivisors();
-  int a_count = a.GetDivisors_count();
-  int b_count = b.GetDivisors_count();
-
-  int result = 1;
-  int* copy_array = new int[b_count];
-  for (int i = 0; i < b_count; ++i) {
-    copy_array[i] = b_divisors[i];
-  }
-
-  for (int i = 0; i < a_count; ++i) {
-    for (int j = 0; j < b_count; ++j) {
-      if (a_divisors[i] == copy_array[j]) {
-        copy_array[j] = 1;
-        break;
-      }
-    }
-    result *= a_divisors[i]; // ???
-  }
-
-  for (int i = 0; i < b_count; ++i) {
-    result *= copy_array[i];
-  }
-
-  delete[] copy_array;
-  return result;
+int PositiveInteger::Lcm(const PositiveInteger& a) const {
+  return (value_ / Gcd(a)) * a.value_;;
 }
 
 

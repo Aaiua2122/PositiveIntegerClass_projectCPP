@@ -3,63 +3,48 @@
 #include "positive_integer.h"
 
 int main() {
-  int x = 120;
-// случаи для 0, 1, 
-  PositiveInteger test1(8);
-  PositiveInteger test2(24);
-  PositiveInteger test3(7);
-  PositiveInteger test4(15);
-  PositiveInteger test5(12);
-
-  std::cout << "\nInit new number1\n";
-  std::cout << x << "\n";
-  PositiveInteger number1(x);
-  std::cout << "N1: ";
-  number1.PrintArray();
-
-// писать числа для которых делители выводим, а не просто n1, n2, ...
-  std::cout << "\nCreate new number2 throught copy_constructor\n";
-  PositiveInteger number2 = number1;
-  std::cout << "N1: ";
-  number1.PrintArray();
-  std::cout << "N2: ";
-  number2.PrintArray();
-
-  std::cout << "\nReplace divisor in number2 (3 --> 11) with sort\n";
-  number2.Replace_divisor(3, 11, true);
-// сделать тоже но без сортировки.
-  std::cout << "N1: ";
-  number1.PrintArray();
-  std::cout << "N2: ";
-  number2.PrintArray();
-
-  std::cout << "\nReplace no exit divisor in number2\n";
-  number2.Replace_divisor(9999, 9999);
-  std::cout << "N1: ";
-  number1.PrintArray(); // зачем?
-  std::cout << "N2: ";
-  number2.PrintArray();
-
-  std::cout << "\nUse Gcd(num1, num2) ----> ";
-  std::cout << Gcd(number1, number2);
-  std::cout << "\nUse Gcd(8, 24) ----> ";
-  std::cout << Gcd(test1, test2);
-  std::cout << "\nUse Gcd(7, 15) ----> ";
-  std::cout << Gcd(test3, test4);
-  std::cout << "\nUse Gcd(12, 12) ----> ";
-  std::cout << Gcd(test5, test5);
-
   std::cout << "\n";
+  std::cout << "1. Prime factors\n";
+  PositiveInteger unsorted(210);
+  const PositiveInteger sorted(210, true);
 
-  std::cout << "\nUse Lcm(num1, num2) ----> ";
-  std::cout << Lcm(number1, number2);
-  std::cout << "\nUse Lcm(8, 24) ----> ";
-  std::cout << Lcm(test1, test2);
-  std::cout << "\nUse Lcm(7, 15) ----> ";
-  std::cout << Lcm(test3, test4);
-  std::cout << "\nUse Lcm(12, 12) ----> ";
-  std::cout << Lcm(test5, test5);
+  std::cout << "210, default mode: ";
+  unsorted.PrintArray();
+  std::cout << "210, sorted mode:  ";
+  sorted.PrintArray();
 
+  std::cout << "\n2. Copy construction and factor replacement\n";
+  {
+    PositiveInteger copy(sorted);
+    copy.Replace_divisor(7, 2);
+    unsorted.Replace_divisor(7, 2);
+
+    std::cout << "Replace 7 with 2 in the sorted copy: ";
+    copy.PrintArray();
+    std::cout << "Replace 7 with 2 in default mode:   ";
+    unsorted.PrintArray();
+
+    copy.Replace_divisor(11, 13);
+    std::cout << "Try to replace missing factor 11:   ";
+    copy.PrintArray();
+  }  
+
+  std::cout << "Original after the copy leaves scope: ";
+  sorted.PrintArray();
+
+  std::cout << "\n3. Copy assignment\n";
+  PositiveInteger assigned(12);
+  std::cout << "Before assignment (12): ";
+  assigned.PrintArray();
+  assigned = sorted;
+  std::cout << "After assignment (210): ";
+  assigned.PrintArray();
+
+  std::cout << "\n4. Greatest common divisor and least common multiple\n";
+  const PositiveInteger eight(8);
+  const PositiveInteger twenty_four(24);
+  std::cout << "GCD(8, 24) = " << eight.Gcd(twenty_four) << '\n';
+  std::cout << "LCM(8, 24) = " << eight.Lcm(twenty_four) << '\n';
   std::cout << "\n";
 
   return 0;
